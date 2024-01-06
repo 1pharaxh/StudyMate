@@ -65,7 +65,8 @@ export function Mail({
   const [mail] = useMail();
   const [downloadURI, setDownloadURI] = React.useState("");
   // File upload function
-  function uploadFile(file: File) {
+  async function uploadFile(file: File) {
+    if (!file) return;
     const storageRef = ref(storage, `files/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -81,8 +82,19 @@ export function Mail({
       },
       () => {
         console.log("Uploaded");
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL: string) => {
           setDownloadURI(downloadURL);
+          fetch("/api/parsepdf", {
+            method: "POST",
+            body: JSON.stringify({ url: downloadURL }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }).then((response) => {
+            response.json().then((data) => {
+              console.log(data);
+            });
+          });
         });
       }
     );

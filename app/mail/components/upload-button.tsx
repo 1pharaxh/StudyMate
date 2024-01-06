@@ -32,7 +32,7 @@ export function UploadButton({ isCollapsed, onUpload }: UploadButtonProps) {
         className="hidden"
         onChange={(e: any) => {
           const file = e.target.files[0];
-          setFileName(file.name); // This sets the file name when a file is uploaded
+          setFileName(file?.name); // This sets the file name when a file is uploaded
           onUpload(file);
         }}
       />
