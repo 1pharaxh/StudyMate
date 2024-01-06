@@ -143,19 +143,19 @@ export function Mail({
         <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
           <Tabs defaultValue="all">
             <div className="flex items-center px-4 py-2">
-              <h1 className="text-xl font-bold">Inbox</h1>
+              <h1 className="text-xl font-bold">Suggestion</h1>
               <TabsList className="ml-auto">
                 <TabsTrigger
                   value="all"
                   className="text-zinc-600 dark:text-zinc-200"
                 >
-                  All mail
+                  Unsolved
                 </TabsTrigger>
                 <TabsTrigger
                   value="unread"
                   className="text-zinc-600 dark:text-zinc-200"
                 >
-                  Unread
+                  Solved
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -169,7 +169,7 @@ export function Mail({
               </form>
             </div>
             <TabsContent value="all" className="m-0">
-              <MailList items={mails} />
+            <MailList items={mails.filter((item) => item.read)} />
             </TabsContent>
             <TabsContent value="unread" className="m-0">
               <MailList items={mails.filter((item) => !item.read)} />
