@@ -2,14 +2,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { Separator } from "@/components/ui/separator";
-import { Mail } from "@/app/mail/data";
-import { useDraw } from "@/hooks/useDraw";
-import { Dispatch, SetStateAction, useState } from "react";
 import { Canvas } from "@/components/ui/DrawCanvas";
 import {
   ClearCanvasButton,
   CopyToClipboardButton,
-  LatexRenderer,
   RedoButton,
   UndoButton,
 } from "@/lib/utils";
