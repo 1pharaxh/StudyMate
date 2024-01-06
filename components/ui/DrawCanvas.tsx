@@ -28,12 +28,6 @@ export function Canvas() {
   return (
     <>
       <LatexRenderer />
-      <div className="canvas-buttons-container">
-        <ClearCanvasButton />
-        <UndoButton />
-        <RedoButton />
-        <CopyToClipboardButton />
-      </div>
       <CanvasInternal />
     </>
   );

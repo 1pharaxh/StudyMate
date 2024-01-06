@@ -53,7 +53,9 @@ export function MailList({ items }: MailListProps) {
                   })}
                 </div>
               </div>
-              <div className="text-xs font-medium">{item.subject}</div>
+              <div className="text-xs font-medium underline underline-offset-2 decoration-red-500 decoration-2">
+                {item.subject}
+              </div>
             </div>
             <div className="line-clamp-2 text-xs text-muted-foreground">
               {item.text.substring(0, 300)}

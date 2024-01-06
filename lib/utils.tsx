@@ -10,6 +10,12 @@ export function cn(...inputs: ClassValue[]) {
 import { useCanvas } from "@/hooks/CanvasContext";
 import { Copy, Delete, Redo, Undo } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 
 export const ClearCanvasButton = () => {
   const { clearCanvas, strokes } = useCanvas();
@@ -17,15 +23,20 @@ export const ClearCanvasButton = () => {
     clearCanvas(false);
   };
   return (
-    <>
-      <Button
-        onClick={handleClick}
-        disabled={strokes.length === 0}
-        variant="outline"
-      >
-        <Delete className="h-6 w-6" />
-      </Button>
-    </>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleClick}
+          disabled={strokes.length === 0}
+        >
+          <Delete className="h-4 w-4" />
+          <span className="sr-only">Clear canvas</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Clear canvas</TooltipContent>
+    </Tooltip>
   );
 };
 
@@ -41,15 +52,20 @@ export const UndoButton = () => {
   };
 
   return (
-    <>
-      <Button
-        onClick={handleClick}
-        disabled={undoHistory.length === 0}
-        variant="outline"
-      >
-        <Undo className="h-6 w-6" />
-      </Button>
-    </>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleClick}
+          disabled={undoHistory.length === 0}
+        >
+          <Undo className="h-4 w-4" />
+          <span className="sr-only">Undo drawing</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Undo drawing</TooltipContent>
+    </Tooltip>
   );
 };
 
@@ -60,15 +76,20 @@ export const RedoButton = () => {
   };
 
   return (
-    <>
-      <Button
-        onClick={handleClick}
-        disabled={redoHistory.length === 0}
-        variant="outline"
-      >
-        <Redo className="h-6 w-6" />
-      </Button>
-    </>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleClick}
+          disabled={redoHistory.length === 0}
+        >
+          <Redo className="h-4 w-4" />
+          <span className="sr-only">Redo drawing</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Undo drawing</TooltipContent>
+    </Tooltip>
   );
 };
 
@@ -79,14 +100,19 @@ export const CopyToClipboardButton = () => {
   };
 
   return (
-    <>
-      <Button
-        onClick={handleClick}
-        disabled={latex.isPlaceholder}
-        variant="outline"
-      >
-        <Copy className="h-6 w-6" />
-      </Button>
-    </>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          disabled={latex.isPlaceholder}
+          onClick={handleClick}
+        >
+          <Copy className="h-4 w-4" />
+          <span className="sr-only">Copy text</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Copy Text</TooltipContent>
+    </Tooltip>
   );
 };
