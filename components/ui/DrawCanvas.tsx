@@ -1,14 +1,8 @@
 // @ts-nocheck
 "use client";
 import React, { useEffect } from "react";
-import {
-  ClearCanvasButton,
-  LatexRenderer,
-  UndoButton,
-  RedoButton,
-  CopyToClipboardButton,
-} from "@/lib/utils";
 import { useCanvas } from "@/hooks/CanvasContext";
+import { ScrollArea } from "./scroll-area";
 
 function CanvasInternal() {
   const { canvasRef, prepareCanvas } = useCanvas();
@@ -18,16 +12,15 @@ function CanvasInternal() {
   }, []);
 
   return (
-    <div className="canvas-container">
-      <canvas ref={canvasRef} className="canvas" />
-    </div>
+    <ScrollArea className="h-screen">
+      <canvas ref={canvasRef} className="w-full h-full block" />
+    </ScrollArea>
   );
 }
 
 export function Canvas() {
   return (
     <>
-      <LatexRenderer />
       <CanvasInternal />
     </>
   );

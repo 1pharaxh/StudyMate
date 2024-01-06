@@ -4,42 +4,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Mail } from "@/app/mail/data";
 import { useDraw } from "@/hooks/useDraw";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Canvas } from "@/components/ui/DrawCanvas";
 import {
   ClearCanvasButton,
   CopyToClipboardButton,
+  LatexRenderer,
   RedoButton,
   UndoButton,
 } from "@/lib/utils";
 
-interface MailDisplayProps {
-  mail: Mail | null;
-}
+interface MailDisplayProps {}
 
-export function MailDisplay({ mail }: MailDisplayProps) {
-  const today = new Date();
-  const [color, setColor] = useState<string>("#000");
-  const { canvasRef, onMouseDown, clear } = useDraw(drawLine);
-
-  function drawLine({ prevPoint, currentPoint, ctx }: Draw) {
-    const { x: currX, y: currY } = currentPoint;
-    const lineColor = color;
-    const lineWidth = 5;
-
-    let startPoint = prevPoint ?? currentPoint;
-    ctx.beginPath();
-    ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = lineColor;
-    ctx.moveTo(startPoint.x, startPoint.y);
-    ctx.lineTo(currX, currY);
-    ctx.stroke();
-
-    ctx.fillStyle = lineColor;
-    ctx.beginPath();
-    ctx.arc(startPoint.x, startPoint.y, 2, 0, 2 * Math.PI);
-    ctx.fill();
-  }
+export function MailDisplay({}: MailDisplayProps) {
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center p-2">
@@ -85,10 +62,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           </div>
         </div>
         <Separator />
-        <div className="flex-1 whitespace-pre-wrap">
-          {/* {mail.text} */}
-          <Canvas />
-        </div>
+        <Canvas />
       </div>
     </div>
   );

@@ -1,33 +1,13 @@
 "use client";
 import * as React from "react";
-import { initializeApp } from "firebase/app";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-import {
-  AlertCircle,
-  Archive,
-  ArchiveX,
-  File,
-  Inbox,
-  MessagesSquare,
-  PenBox,
-  Search,
-  Send,
-  ShoppingCart,
-  Trash2,
-  Users2,
-} from "lucide-react";
+import { Search } from "lucide-react";
 
 import { UploadButton } from "@/app/mail/components/upload-button";
 import { MailDisplay } from "@/app/mail/components/mail-display";
 import { MailList } from "@/app/mail/components/mail-list";
 import { Mail } from "@/app/mail/data";
-import { useMail } from "@/app/use-mail";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
@@ -38,9 +18,9 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { Button } from "@/components/ui/button";
 import PDFViewer from "@/components/ui/PDFViewer";
-import { app, storage } from "@/hooks/firebase";
+import { storage } from "@/hooks/firebase";
+import { useCanvas } from "@/hooks/CanvasContext";
 
 interface MailProps {
   accounts: {
@@ -62,8 +42,9 @@ export function Mail({
   navCollapsedSize,
 }: MailProps) {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
-  const [mail] = useMail();
+  const { latex } = useCanvas();
   const [downloadURI, setDownloadURI] = React.useState("");
+
   // File upload function
   async function uploadFile(file: File) {
     if (!file) return;
@@ -99,6 +80,9 @@ export function Mail({
       }
     );
   }
+  React.useEffect(() => {
+    console.log(latex.code);
+  }, [latex]);
   return (
     <TooltipProvider delayDuration={0}>
       <ResizablePanelGroup
@@ -108,7 +92,7 @@ export function Mail({
             sizes
           )}`;
         }}
-        className="h-full"
+        className="h-full max-h-screen"
       >
         <ResizablePanel
           defaultSize={defaultLayout[0]}
@@ -146,9 +130,7 @@ export function Mail({
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={defaultLayout[2]}>
-          <MailDisplay
-            mail={mails.find((item) => item.id === mail.selected) || null}
-          />
+          <MailDisplay />
         </ResizablePanel>
 
         <ResizableHandle withHandle />

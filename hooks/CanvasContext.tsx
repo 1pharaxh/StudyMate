@@ -41,9 +41,9 @@ export const CanvasProvider = ({ children }) => {
     var h = document.documentElement.clientHeight;
 
     canvas.width = w * 2;
-    canvas.height = h * 1.5;
+    canvas.height = h * 10;
     canvas.style.width = `${w}px`;
-    canvas.style.height = `${h * 0.75}px`;
+    canvas.style.height = `${h * 5}px`;
 
     const context = canvas.getContext("2d");
     context.scale(2, 2);
@@ -459,22 +459,22 @@ export const CanvasProvider = ({ children }) => {
   useEffect(() => {
     if (mathpixContext !== null) {
       if (strokes.length > 0) {
-        getLatexTimedOut(100);
+        getLatexTimedOut(5000);
       } else {
         clearTimeout(renderLatexTimeout);
         setLatex({
-          code: "\\[\\text{ Draw your math below }\\]",
+          code: "Draw your math below",
           isPlaceholder: true,
         });
       }
     } else if (!isActive) {
       setLatex({
-        code: "\\[\\text{ Session expired due to inactivity. Draw to start new session. }\\]",
+        code: "Session expired due to inactivity. Draw to start new session.",
         isPlaceholder: true,
       });
     } else {
       setLatex({
-        code: "\\[\\text{ Connecting to Mathpix... }\\]",
+        code: "Connecting to Mathpix...",
         isPlaceholder: true,
       });
     }
@@ -488,7 +488,7 @@ export const CanvasProvider = ({ children }) => {
         if (!response?.data?.error) {
           if (response?.data?.latex_styled) {
             setLatex({
-              code: `\\[${response.data.latex_styled}\\]`,
+              code: response.data.latex_styled,
               isPlaceholder: false,
             });
           } else {
