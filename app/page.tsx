@@ -4,14 +4,6 @@ import Link from "next/link";
 import React, { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import image from "@/public/landing_page_1.png";
 import image1 from "@/public/landing_page_2.png";
@@ -42,7 +34,7 @@ const page: FC = () => {
                 </Button>
               </Link>
             </div>
-            <Carousel className="w-full mt-4">
+            {/* <Carousel className="w-full mt-4">
               <CarouselContent>
                 {Array.from({ length: 3 }).map((_, index) => (
                   <CarouselItem key={index}>
@@ -50,10 +42,10 @@ const page: FC = () => {
                       <Card>
                         <CardContent className="flex items-center justify-center">
                           <Image
-                            src={ImageArray[index]}
+                            src={ImageArray[0]}
                             width={700}
                             height={500}
-                            className="rounded-lg w-full h-full"
+                            className="rounded-lg h-full w-full mt-4"
                             alt="landing page"
                           />
                         </CardContent>
@@ -64,7 +56,14 @@ const page: FC = () => {
               </CarouselContent>
               <CarouselPrevious />
               <CarouselNext />
-            </Carousel>
+            </Carousel> */}
+            <Image
+              src={ImageArray[0]}
+              width={700}
+              height={500}
+              className="rounded-lg h-full w-full mt-4"
+              alt="landing page"
+            />
           </div>
         </div>
       </div>
