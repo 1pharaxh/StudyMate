@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import React, { FC } from "react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const page: FC = () => {
   return (
@@ -51,6 +53,11 @@ const page: FC = () => {
                 </TabsList>
                 <TabsContent value="teacher">
                   Your classroom ID is: 12334.
+                </TabsContent>
+
+                <TabsContent value="student">
+                  <Label htmlFor="email">Student Name</Label>
+                  <Input type="text" id="student_name" placeholder="Name" />
                 </TabsContent>
               </Tabs>
             </div>
