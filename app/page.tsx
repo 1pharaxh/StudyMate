@@ -4,7 +4,20 @@ import Link from "next/link";
 import React, { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
+import image from "@/public/landing_page_1.png";
+import image1 from "@/public/landing_page_2.png";
+import image2 from "@/public/landing_page_3.png";
 
+const ImageArray = [image, image2, image1];
 const page: FC = () => {
   return (
     <>
@@ -29,6 +42,29 @@ const page: FC = () => {
                 </Button>
               </Link>
             </div>
+            <Carousel className="w-full mt-3">
+              <CarouselContent>
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <CarouselItem key={index}>
+                    <div className="p-1">
+                      <Card>
+                        <CardContent className="flex items-center justify-center">
+                          <Image
+                            src={ImageArray[index]}
+                            width={700}
+                            height={500}
+                            className="rounded-lg w-full h-full"
+                            alt="landing page"
+                          />
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
           </div>
         </div>
       </div>

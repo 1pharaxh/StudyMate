@@ -26,6 +26,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.1.0",
+    "embla-carousel-react": "^8.0.0-rc19",
     "firebase": "^10.7.1",
     "http": "^0.0.1-security",
     "jotai": "^2.6.1",
