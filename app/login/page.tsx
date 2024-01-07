@@ -3,15 +3,30 @@ import Link from "next/link";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useLogin } from "../use-login";
+import { useRouter } from "next/navigation";
 
 const page: FC = () => {
+  const [loggedin, setLoggedin] = useLogin();
+  const router = useRouter();
+  // Inside your component
+
+  const [activeTab, setActiveTab] = React.useState("");
+  useEffect(() => {
+    console.log(loggedin);
+    if (loggedin.signedIn === "student") {
+      router.push("/mail");
+    } else if (loggedin.signedIn === "teacher") {
+      router.push("/teacherdashboard");
+    }
+  }, [loggedin]);
   return (
     <>
-      <div className="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      <div className="container relative flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
           <div className="absolute inset-0 bg-zinc-900" />
           <div className="relative z-20 flex items-center text-lg font-medium">
@@ -48,33 +63,113 @@ const page: FC = () => {
               </h1>
               <Tabs defaultValue="account" className="w-[600px]">
                 <TabsList>
-                  <TabsTrigger value="teacher">Teacher</TabsTrigger>
-                  <TabsTrigger value="student">Student</TabsTrigger>
+                  <TabsTrigger
+                    onClick={() => setActiveTab("teacher")}
+                    value="teacher"
+                  >
+                    Teacher
+                  </TabsTrigger>
+                  <TabsTrigger
+                    onClick={() => setActiveTab("student")}
+                    value="student"
+                  >
+                    Student
+                  </TabsTrigger>
                 </TabsList>
-                <TabsContent value="teacher">
-                  Your classroom ID is: 12334.
+                <TabsContent
+                  value="teacher"
+                  className="items-center justify-center flex flex-col gap-2"
+                >
+                  <div className="max-w-44 items-start justify-center flex flex-col gap-1.5">
+                    <Label htmlFor="email">Teacher Name</Label>
+                    <Input type="text" id="teacher_name" placeholder="Name" />
+                  </div>
+                  <div className="max-w-44 items-start justify-center flex flex-col gap-1.5">
+                    <Label htmlFor="email">Subject Name</Label>
+                    <Input
+                      type="text"
+                      id="subject_name"
+                      placeholder="Subject"
+                    />
+                  </div>
+                  <div className="max-w-44 items-start justify-center flex flex-col gap-1.5">
+                    <Label htmlFor="email">Duration</Label>
+                    <Input
+                      type="text"
+                      id="duration_time"
+                      placeholder="Duration"
+                    />
+                  </div>
+                  your room code is: 123456
                 </TabsContent>
 
-                <TabsContent value="student">
-                  <Label htmlFor="email">Student Name</Label>
-                  <Input type="text" id="student_name" placeholder="Name" />
+                <TabsContent
+                  value="student"
+                  className="items-center justify-center flex flex-col gap-2"
+                >
+                  <div className="max-w-44 items-start justify-center flex flex-col gap-1.5">
+                    <Label htmlFor="email">Student Name</Label>
+                    <Input type="text" id="student_name" placeholder="Name" />
+                  </div>
                 </TabsContent>
               </Tabs>
             </div>
-            <Button type="button" variant="default" size="default">
+            <Button
+              type="button"
+              variant="default"
+              size="default"
+              onClick={() => {
+                setLoggedin({
+                  signedIn: "student",
+                  name: (
+                    document.getElementById("student_name") as HTMLInputElement
+                  ).value,
+                });
+
+                if (activeTab === "student") {
+                  setLoggedin({
+                    signedIn: "student",
+                    name: (
+                      document.getElementById(
+                        "student_name"
+                      ) as HTMLInputElement
+                    ).value,
+                  });
+                } else if (activeTab === "teacher") {
+                  setLoggedin({
+                    signedIn: "teacher",
+                    name: (
+                      document.getElementById(
+                        "teacher_name"
+                      ) as HTMLInputElement
+                    ).value,
+                    subject: (
+                      document.getElementById(
+                        "subject_name"
+                      ) as HTMLInputElement
+                    ).value,
+                    duration: (
+                      document.getElementById(
+                        "duration_time"
+                      ) as HTMLInputElement
+                    ).value,
+                  });
+                }
+              }}
+            >
               Continue
             </Button>
             <p className="px-8 text-center text-sm text-muted-foreground">
               By clicking continue, you agree to our{" "}
               <Link
-                href="/terms"
+                href="/login"
                 className="underline underline-offset-4 hover:text-primary"
               >
                 Terms of Service
               </Link>{" "}
               and{" "}
               <Link
-                href="/privacy"
+                href="/login"
                 className="underline underline-offset-4 hover:text-primary"
               >
                 Privacy Policy

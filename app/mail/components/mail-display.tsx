@@ -9,10 +9,13 @@ import {
   RedoButton,
   UndoButton,
 } from "@/lib/utils";
+import { useLogin } from "@/app/use-login";
 
 interface MailDisplayProps {}
 
 export function MailDisplay({}: MailDisplayProps) {
+  const [loggedin, setLoggedin] = useLogin();
+  console.log(loggedin.name + " MailDisplay ");
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center p-2">
@@ -31,16 +34,16 @@ export function MailDisplay({}: MailDisplayProps) {
         <div className="flex items-start p-4">
           <div className="flex items-start gap-4 text-sm">
             <Avatar>
-              <AvatarImage alt={"Student Name"} />
+              <AvatarImage alt={loggedin.name} />
               <AvatarFallback>
-                {"Student Name"
+                {loggedin.name
                   .split(" ")
                   .map((chunk) => chunk[0])
                   .join("")}
               </AvatarFallback>
             </Avatar>
             <div className="grid gap-1">
-              <div className="font-semibold">{"Student Name"}</div>
+              <div className="font-semibold">{loggedin.name}</div>
               <div className="line-clamp-1 text-xs">{"Name of class"}</div>
               <div className="line-clamp-1 text-xs">
                 <span className="font-medium">Joined </span>{" "}

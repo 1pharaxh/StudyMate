@@ -22,7 +22,7 @@ import {
 import PDFViewer from "@/components/ui/PDFViewer";
 import { storage } from "@/hooks/firebase";
 import { useCanvas } from "@/hooks/CanvasContext";
-const API_REQUEST_TIMEOUT = 10000;
+import { useLogin } from "@/app/use-login";
 interface MailProps {
   accounts: {
     label: string;
@@ -47,6 +47,19 @@ export function Mail({
   const [downloadURI, setDownloadURI] = React.useState("");
   const [suggestions, setSuggestions] = React.useState([]);
   const [backupSuggestions, setBackupSuggestions] = React.useState([]);
+  const [loggedin, setLoggedin] = useLogin();
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    if (loggedin.signedIn !== "student") {
+      // redirect to login page
+      window.location.href = "/";
+      setLoading(false);
+      return;
+    } else {
+      return;
+    }
+  }, [loggedin]);
   // File upload function
   async function uploadFile(file: File) {
     if (!file) return;
@@ -72,145 +85,154 @@ export function Mail({
     );
   }
   React.useEffect(() => {
-    console.log(latex.code);
-    fetch("/api/parsepdf", {
-      method: "POST",
-      body: JSON.stringify({ pdfurl: downloadURI, userText: latex.code }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((response) => {
-      response.json().then((data) => {
-        console.log(data);
-        //@ts-ignore
-        if (!data.ai_response) {
-          setSuggestions([]);
-          return;
-        }
-        let suggestionsMap = data.ai_response;
-        if (Array.isArray(data.ai_response)) {
-          let temp = suggestions;
-          for (let i = 0; i < suggestionsMap.length; i++) {
-            temp.push(suggestionsMap[i]);
+    if (loggedin.signedIn !== "student") {
+      // redirect to login page
+      window.location.href = "/";
+      return;
+    } else if (loggedin.signedIn === "student") {
+      setLoading(false);
+      console.log(latex.code);
+      fetch("/api/parsepdf", {
+        method: "POST",
+        body: JSON.stringify({ pdfurl: downloadURI, userText: latex.code }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((response) => {
+        response.json().then((data) => {
+          console.log(data);
+          //@ts-ignore
+          if (!data.ai_response) {
+            setSuggestions([]);
+            return;
           }
-          // keep appending to the suggestions array
-          setSuggestions(temp);
-          setBackupSuggestions(temp);
-        } else {
-          console.error("suggestionsMap is not an array:", suggestionsMap);
-        }
+          let suggestionsMap = data.ai_response;
+          if (Array.isArray(data.ai_response)) {
+            let temp = suggestions;
+            for (let i = 0; i < suggestionsMap.length; i++) {
+              temp.push(suggestionsMap[i]);
+            }
+            // keep appending to the suggestions array
+            setSuggestions(temp);
+            setBackupSuggestions(temp);
+          } else {
+            console.error("suggestionsMap is not an array:", suggestionsMap);
+          }
+        });
       });
-    });
-  }, [latex, downloadURI]); // The dependencies are still the same
+    }
+  }, [latex, downloadURI, loggedin]); // The dependencies are still the same
 
   return (
-    <TooltipProvider delayDuration={0}>
-      <ResizablePanelGroup
-        direction="horizontal"
-        onLayout={(sizes: number[]) => {
-          document.cookie = `react-resizable-panels:layout=${JSON.stringify(
-            sizes
-          )}`;
-        }}
-        className="h-full max-h-screen"
-      >
-        <ResizablePanel
-          defaultSize={defaultLayout[0]}
-          collapsedSize={navCollapsedSize}
-          collapsible={true}
-          minSize={15}
-          maxSize={400}
-          onCollapse={() => {
-            setIsCollapsed(true);
-            document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
-              true
+    <>
+      <TooltipProvider delayDuration={0}>
+        <ResizablePanelGroup
+          direction="horizontal"
+          onLayout={(sizes: number[]) => {
+            document.cookie = `react-resizable-panels:layout=${JSON.stringify(
+              sizes
             )}`;
           }}
-          onExpand={() => {
-            setIsCollapsed(false);
-            document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
-              false
-            )}`;
-          }}
-          className={cn(
-            isCollapsed &&
-              "min-w-[50px] transition-all duratison-300 ease-in-out"
-          )}
+          className="h-full max-h-screen"
         >
-          <div
+          <ResizablePanel
+            defaultSize={defaultLayout[0]}
+            collapsedSize={navCollapsedSize}
+            collapsible={true}
+            minSize={15}
+            maxSize={400}
+            onCollapse={() => {
+              setIsCollapsed(true);
+              document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+                true
+              )}`;
+            }}
+            onExpand={() => {
+              setIsCollapsed(false);
+              document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+                false
+              )}`;
+            }}
             className={cn(
-              "flex h-[52px] items-center justify-center",
-              isCollapsed ? "h-[52px] px-2" : "px-2"
+              isCollapsed &&
+                "min-w-[50px] transition-all duratison-300 ease-in-out"
             )}
           >
-            <UploadButton isCollapsed={isCollapsed} onUpload={uploadFile} />
-          </div>
-          <Separator />
-          <PDFViewer isCollapsed={isCollapsed} pdf_url={downloadURI} />
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={defaultLayout[2]}>
-          <MailDisplay />
-        </ResizablePanel>
-
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
-          <Tabs defaultValue="unsolved">
-            <div className="flex items-center px-4 py-2">
-              <h1 className="text-xl font-bold">Suggestion</h1>
-              <TabsList className="ml-auto">
-                <TabsTrigger
-                  value="unsolved"
-                  className="text-zinc-600 dark:text-zinc-200"
-                >
-                  Unsolved
-                </TabsTrigger>
-                <TabsTrigger
-                  value="solved"
-                  className="text-zinc-600 dark:text-zinc-200"
-                >
-                  Solved
-                </TabsTrigger>
-              </TabsList>
+            <div
+              className={cn(
+                "flex h-[52px] items-center justify-center",
+                isCollapsed ? "h-[52px] px-2" : "px-2"
+              )}
+            >
+              <UploadButton isCollapsed={isCollapsed} onUpload={uploadFile} />
             </div>
             <Separator />
-            <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-              <form>
-                <div className="relative">
-                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search"
-                    className="pl-8"
-                    onChange={(e) => {
-                      if (e.target.value === "") {
-                        setSuggestions(backupSuggestions);
-                        return;
-                      }
-                      setSuggestions((prev) => {
-                        return prev.filter((suggestion) => {
-                          return suggestion.fixTitle.includes(e.target.value);
+            <PDFViewer isCollapsed={isCollapsed} pdf_url={downloadURI} />
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={defaultLayout[2]}>
+            <MailDisplay />
+          </ResizablePanel>
+
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
+            <Tabs defaultValue="unsolved">
+              <div className="flex items-center px-4 py-2">
+                <h1 className="text-xl font-bold">Suggestion</h1>
+                <TabsList className="ml-auto">
+                  <TabsTrigger
+                    value="unsolved"
+                    className="text-zinc-600 dark:text-zinc-200"
+                  >
+                    Unsolved
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="solved"
+                    className="text-zinc-600 dark:text-zinc-200"
+                  >
+                    Solved
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+              <Separator />
+              <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <form>
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search"
+                      className="pl-8"
+                      onChange={(e) => {
+                        if (e.target.value === "") {
+                          setSuggestions(backupSuggestions);
+                          return;
+                        }
+                        setSuggestions((prev) => {
+                          return prev.filter((suggestion) => {
+                            return suggestion.fixTitle.includes(e.target.value);
+                          });
                         });
-                      });
-                    }}
-                  />
-                </div>
-              </form>
-            </div>
-            <TabsContent value="solved" className="m-0">
-              <MailList
-                setSuggestions={setSuggestions}
-                items={suggestions.filter((item) => item.read)}
-              />
-            </TabsContent>
-            <TabsContent value="unsolved" className="m-0">
-              <MailList
-                setSuggestions={setSuggestions}
-                items={suggestions.filter((item) => !item.read)}
-              />
-            </TabsContent>
-          </Tabs>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </TooltipProvider>
+                      }}
+                    />
+                  </div>
+                </form>
+              </div>
+              <TabsContent value="solved" className="m-0">
+                <MailList
+                  setSuggestions={setSuggestions}
+                  items={suggestions.filter((item) => item.read)}
+                />
+              </TabsContent>
+              <TabsContent value="unsolved" className="m-0">
+                <MailList
+                  setSuggestions={setSuggestions}
+                  items={suggestions.filter((item) => !item.read)}
+                />
+              </TabsContent>
+            </Tabs>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </TooltipProvider>
+    </>
   );
 }
