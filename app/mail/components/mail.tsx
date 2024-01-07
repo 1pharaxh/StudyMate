@@ -1,3 +1,4 @@
+//@ts-nocheck
 "use client";
 import * as React from "react";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -21,7 +22,7 @@ import {
 import PDFViewer from "@/components/ui/PDFViewer";
 import { storage } from "@/hooks/firebase";
 import { useCanvas } from "@/hooks/CanvasContext";
-const API_REQUEST_TIMEOUT = 20000;
+const API_REQUEST_TIMEOUT = 10000;
 interface MailProps {
   accounts: {
     label: string;
@@ -44,7 +45,7 @@ export function Mail({
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const { latex } = useCanvas();
   const [downloadURI, setDownloadURI] = React.useState("");
-
+  const [suggestions, setSuggestions] = React.useState([]);
   // File upload function
   async function uploadFile(file: File) {
     if (!file) return;
@@ -71,25 +72,33 @@ export function Mail({
   }
   React.useEffect(() => {
     console.log(latex.code);
-    // Create a timer that will run every 10 seconds
-    const timer = setInterval(() => {
-      fetch("/api/parsepdf", {
-        method: "POST",
-        body: JSON.stringify({ pdfurl: downloadURI, userText: latex.code }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((response) => {
-        response.json().then((data) => {
-          console.log(data);
-        });
+    fetch("/api/parsepdf", {
+      method: "POST",
+      body: JSON.stringify({ pdfurl: downloadURI, userText: latex.code }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
+      response.json().then((data) => {
+        console.log(data);
+        //@ts-ignore
+        if (!data.ai_response) {
+          setSuggestions([]);
+          return;
+        }
+        let suggestionsMap = data.ai_response;
+        if (Array.isArray(data.ai_response)) {
+          let temp = suggestions;
+          for (let i = 0; i < suggestionsMap.length; i++) {
+            temp.push(suggestionsMap[i]);
+          }
+          // keep appending to the suggestions array
+          setSuggestions(temp);
+        } else {
+          console.error("suggestionsMap is not an array:", suggestionsMap);
+        }
       });
-    }, API_REQUEST_TIMEOUT); // 10000 milliseconds = 10 seconds
-
-    // Return a cleanup function that will clear the timer
-    return () => {
-      clearInterval(timer);
-    };
+    });
   }, [latex, downloadURI]); // The dependencies are still the same
 
   return (
@@ -172,10 +181,16 @@ export function Mail({
               </form>
             </div>
             <TabsContent value="solved" className="m-0">
-              <MailList items={mails} />
+              <MailList
+                setSuggestions={setSuggestions}
+                items={suggestions.filter((item) => item.read)}
+              />
             </TabsContent>
             <TabsContent value="unsolved" className="m-0">
-              <MailList items={mails.filter((item) => !item.read)} />
+              <MailList
+                setSuggestions={setSuggestions}
+                items={suggestions.filter((item) => !item.read)}
+              />
             </TabsContent>
           </Tabs>
         </ResizablePanel>

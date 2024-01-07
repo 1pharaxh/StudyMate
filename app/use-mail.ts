@@ -1,13 +1,11 @@
 import { atom, useAtom } from "jotai";
 
-import { Mail, mails } from "@/app/mail/data";
-
 type Config = {
-  selected: Mail["id"] | null;
+  selected: null | number | string;
 };
 
 const configAtom = atom<Config>({
-  selected: mails[0].id,
+  selected: null,
 });
 
 export function useMail() {
