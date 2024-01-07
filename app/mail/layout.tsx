@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
+import { CanvasProvider } from "@/hooks/CanvasContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Study Mate",
-  description: "Elevate your learning experience.",
+  title: "Student Dashboard | Study Mate",
+  description: "Student Dashboard | Study Mate",
 };
 
 export default function RootLayout({
@@ -16,7 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <CanvasProvider>
+        <body className={inter.className}>{children}</body>
+      </CanvasProvider>
     </html>
   );
 }

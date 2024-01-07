@@ -1,25 +1,39 @@
-import { cookies } from "next/headers";
+"use client";
+import Link from "next/link";
 
-import { Mail } from "@/app/mail/components/mail";
-import { accounts, mails } from "@/app/mail/data";
+import React, { FC } from "react";
+import { Button } from "@/components/ui/button";
+import { LogIn } from "lucide-react";
 
-export default function MailPage() {
-  const layout = cookies().get("react-resizable-panels:layout");
-  const collapsed = cookies().get("react-resizable-panels:collapsed");
-
-  const defaultLayout = layout ? JSON.parse(layout.value) : undefined;
-  const defaultCollapsed =
-    collapsed !== undefined ? JSON.parse(collapsed.value) : undefined;
-
+const page: FC = () => {
   return (
-    <div className=" flex-col flex">
-      <Mail
-        accounts={accounts}
-        mails={mails}
-        defaultLayout={defaultLayout}
-        defaultCollapsed={defaultCollapsed}
-        navCollapsedSize={4}
-      />
-    </div>
+    <>
+      <div className="w-screen min-h-screen bg-gradient-to-r from-blue-100 to-teal-100">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="flex flex-col items-center text-center">
+            <div className="flex items-center">
+              <h1 className="mr-3 text-5xl font-semibold">Study Mate 👀</h1>
+              {/* <UserButton afterSignOutUrl="/" /> */}
+            </div>
+
+            <p className="max-w-xl mt-1 text-lg text-slate-600">
+              An app to help take notes for students with ADHD and other
+              learning disabilities
+            </p>
+
+            <div className="w-full mt-4">
+              <Link href="/login">
+                <Button>
+                  Login to get Started!
+                  <LogIn className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
-}
+};
+
+export default page;
