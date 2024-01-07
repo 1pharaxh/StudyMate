@@ -21,7 +21,7 @@ const ImageArray = [image, image2, image1];
 const page: FC = () => {
   return (
     <>
-      <div className="w-screen min-h-screen bg-gradient-to-r from-blue-100 to-teal-100">
+      <div className="w-screen min-h-screen bg-gradient-to-r from-pink-100 to-teal-100">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center">
@@ -42,7 +42,7 @@ const page: FC = () => {
                 </Button>
               </Link>
             </div>
-            <Carousel className="w-full mt-3">
+            <Carousel className="w-full mt-4">
               <CarouselContent>
                 {Array.from({ length: 3 }).map((_, index) => (
                   <CarouselItem key={index}>
