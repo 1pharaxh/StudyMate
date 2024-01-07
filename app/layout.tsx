@@ -17,9 +17,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <CanvasProvider>
+      {/* <CanvasProvider>
         <body className={inter.className}>{children}</body>
-      </CanvasProvider>
+      </CanvasProvider> */}
+      <body className={inter.className}>{children}</body>
+
     </html>
   );
 }
