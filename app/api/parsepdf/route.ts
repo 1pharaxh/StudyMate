@@ -29,8 +29,8 @@ async function SendToAI(book: String, notes: String): Promise<string> {
       {
         role: "user",
         content: `You are a learning assistant. Your only job is to help students fix their notes ONLY IF THE NOTES ARE FUNDAMENTALLY WRONG.
-        Given the book and the notes YOU CAN ONLY ANSWER with an array of 0 to multiple objects using the JSON FORMAT. Each object has the key read = false by default and follows the schema of
-        [{ fixTitle: '', incorrectLineFromNotes: '', whatToFix: '', read:false}...]. If a particular notes comes close to the original concept in any sense then you should not give any suggestions for that note, also please no elaborations. Now given the book and notes return the suggestions array 
+        Given the book and the notes YOU CAN ONLY ANSWER with an array of 0 to multiple objects using the JSON FORMAT. Each object has the key read = false by default, also give each object a random id and follows the schema of
+        [{ id: '', fixTitle: '', incorrectLineFromNotes: '', whatToFix: '', read:false}...]. If a particular notes comes close to the original concept in any sense then you should not give any suggestions for that note, also please no elaborations. Now given the book and notes return the suggestions array 
         
         Book: ${book}
         Notes: ${notes}`,

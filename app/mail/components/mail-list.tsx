@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 type Suggestions = {
+  id: string;
   fixTitle: string;
   incorrectLineFromNotes: string;
   whatToFix: string;
@@ -20,6 +21,7 @@ interface MailListProps {
   setSuggestions: React.Dispatch<
     React.SetStateAction<
       {
+        id: string;
         fixTitle: string;
         incorrectLineFromNotes: string;
         whatToFix: string;
@@ -41,12 +43,18 @@ export function MailList({ items, setSuggestions }: MailListProps) {
               key={index}
               className={cn(
                 "flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
-                mail.selected === item.fixTitle && "bg-muted"
+                mail.selected ===
+                  item.fixTitle +
+                    item.incorrectLineFromNotes +
+                    item.whatToFix && "bg-muted"
               )}
               onClick={() =>
                 setMail({
                   ...mail,
-                  selected: item.fixTitle,
+                  selected:
+                    item.fixTitle +
+                    item.incorrectLineFromNotes +
+                    item.whatToFix,
                 })
               }
             >
@@ -61,7 +69,10 @@ export function MailList({ items, setSuggestions }: MailListProps) {
                   <div
                     className={cn(
                       "ml-auto text-xs",
-                      mail.selected === item.fixTitle
+                      mail.selected ===
+                        item.fixTitle +
+                          item.incorrectLineFromNotes +
+                          item.whatToFix
                         ? "text-foreground"
                         : "text-muted-foreground"
                     )}
@@ -74,7 +85,14 @@ export function MailList({ items, setSuggestions }: MailListProps) {
                               // match the selected item with the item in the array and then change the read property to true
                               setSuggestions((prev) => {
                                 return prev.map((suggestion) => {
-                                  if (suggestion.fixTitle === item.fixTitle) {
+                                  if (
+                                    suggestion.fixTitle +
+                                      suggestion.incorrectLineFromNotes +
+                                      suggestion.whatToFix ===
+                                    item.fixTitle +
+                                      item.incorrectLineFromNotes +
+                                      item.whatToFix
+                                  ) {
                                     suggestion.read = false;
                                   }
                                   return suggestion;
@@ -92,7 +110,14 @@ export function MailList({ items, setSuggestions }: MailListProps) {
                               // match the selected item with the item in the array and then change the read property to true
                               setSuggestions((prev) => {
                                 return prev.map((suggestion) => {
-                                  if (suggestion.fixTitle === item.fixTitle) {
+                                  if (
+                                    suggestion.fixTitle +
+                                      suggestion.incorrectLineFromNotes +
+                                      suggestion.whatToFix ===
+                                    item.fixTitle +
+                                      item.incorrectLineFromNotes +
+                                      item.whatToFix
+                                  ) {
                                     suggestion.read = true;
                                   }
                                   return suggestion;
@@ -117,12 +142,16 @@ export function MailList({ items, setSuggestions }: MailListProps) {
 
               <div
                 className={`${
-                  mail.selected === item.fixTitle ? "" : " line-clamp-2 "
+                  mail.selected ===
+                  item.fixTitle + item.incorrectLineFromNotes + item.whatToFix
+                    ? ""
+                    : " line-clamp-2 "
                 } text-xs text-muted-foreground 
               transition-all ease-in-out duration-300
               `}
               >
-                {mail.selected === item.fixTitle
+                {mail.selected ===
+                item.fixTitle + item.incorrectLineFromNotes + item.whatToFix
                   ? item.whatToFix
                   : item.whatToFix.substring(0, 300)}
               </div>

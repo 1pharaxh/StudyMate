@@ -46,6 +46,7 @@ export function Mail({
   const { latex } = useCanvas();
   const [downloadURI, setDownloadURI] = React.useState("");
   const [suggestions, setSuggestions] = React.useState([]);
+  const [backupSuggestions, setBackupSuggestions] = React.useState([]);
   // File upload function
   async function uploadFile(file: File) {
     if (!file) return;
@@ -94,6 +95,7 @@ export function Mail({
           }
           // keep appending to the suggestions array
           setSuggestions(temp);
+          setBackupSuggestions(temp);
         } else {
           console.error("suggestionsMap is not an array:", suggestionsMap);
         }
@@ -176,7 +178,21 @@ export function Mail({
               <form>
                 <div className="relative">
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Search" className="pl-8" />
+                  <Input
+                    placeholder="Search"
+                    className="pl-8"
+                    onChange={(e) => {
+                      if (e.target.value === "") {
+                        setSuggestions(backupSuggestions);
+                        return;
+                      }
+                      setSuggestions((prev) => {
+                        return prev.filter((suggestion) => {
+                          return suggestion.fixTitle.includes(e.target.value);
+                        });
+                      });
+                    }}
+                  />
                 </div>
               </form>
             </div>
