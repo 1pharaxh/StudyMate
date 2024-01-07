@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { getLatex, getStrokesToken } from "./mathPixApi";
-
+const API_REQUEST_TIMEOUT = 5000;
 const CanvasContext = React.createContext();
 var currentStroke = null;
 
@@ -459,7 +459,7 @@ export const CanvasProvider = ({ children }) => {
   useEffect(() => {
     if (mathpixContext !== null) {
       if (strokes.length > 0) {
-        getLatexTimedOut(5000);
+        getLatexTimedOut(API_REQUEST_TIMEOUT);
       } else {
         clearTimeout(renderLatexTimeout);
         setLatex({

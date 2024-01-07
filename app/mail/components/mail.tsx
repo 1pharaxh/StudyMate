@@ -21,7 +21,7 @@ import {
 import PDFViewer from "@/components/ui/PDFViewer";
 import { storage } from "@/hooks/firebase";
 import { useCanvas } from "@/hooks/CanvasContext";
-
+const API_REQUEST_TIMEOUT = 20000;
 interface MailProps {
   accounts: {
     label: string;
@@ -65,24 +65,33 @@ export function Mail({
         console.log("Uploaded");
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL: string) => {
           setDownloadURI(downloadURL);
-          fetch("/api/parsepdf", {
-            method: "POST",
-            body: JSON.stringify({ url: downloadURL }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }).then((response) => {
-            response.json().then((data) => {
-              console.log(data);
-            });
-          });
         });
       }
     );
   }
   React.useEffect(() => {
     console.log(latex.code);
-  }, [latex]);
+    // Create a timer that will run every 10 seconds
+    const timer = setInterval(() => {
+      fetch("/api/parsepdf", {
+        method: "POST",
+        body: JSON.stringify({ pdfurl: downloadURI, userText: latex.code }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((response) => {
+        response.json().then((data) => {
+          console.log(data);
+        });
+      });
+    }, API_REQUEST_TIMEOUT); // 10000 milliseconds = 10 seconds
+
+    // Return a cleanup function that will clear the timer
+    return () => {
+      clearInterval(timer);
+    };
+  }, [latex, downloadURI]); // The dependencies are still the same
+
   return (
     <TooltipProvider delayDuration={0}>
       <ResizablePanelGroup

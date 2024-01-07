@@ -32,7 +32,7 @@ export const ClearCanvasButton = () => {
           disabled={strokes.length === 0}
         >
           <Delete className="h-4 w-4" />
-          <span className="sr-only">Clear canvas</span>
+          {/* <span className="sr-only">Clear canvas</span> */}
         </Button>
       </TooltipTrigger>
       <TooltipContent>Clear canvas</TooltipContent>
@@ -61,7 +61,6 @@ export const UndoButton = () => {
           disabled={undoHistory.length === 0}
         >
           <Undo className="h-4 w-4" />
-          <span className="sr-only">Undo drawing</span>
         </Button>
       </TooltipTrigger>
       <TooltipContent>Undo drawing</TooltipContent>
@@ -85,7 +84,6 @@ export const RedoButton = () => {
           disabled={redoHistory.length === 0}
         >
           <Redo className="h-4 w-4" />
-          <span className="sr-only">Redo drawing</span>
         </Button>
       </TooltipTrigger>
       <TooltipContent>Undo drawing</TooltipContent>
@@ -109,7 +107,7 @@ export const CopyToClipboardButton = () => {
           onClick={handleClick}
         >
           <Copy className="h-4 w-4" />
-          <span className="sr-only">Copy text</span>
+          {/* <span className="sr-only">Copy text</span> */}
         </Button>
       </TooltipTrigger>
       <TooltipContent>Copy Text</TooltipContent>
