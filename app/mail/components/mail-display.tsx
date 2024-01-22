@@ -15,7 +15,6 @@ interface MailDisplayProps {}
 
 export function MailDisplay({}: MailDisplayProps) {
   const [loggedin, setLoggedin] = useLogin();
-  console.log(loggedin.name + " MailDisplay ");
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center p-2">
